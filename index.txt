@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Clueless Outfit Generator - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-bg leopard-page">
+
+  <nav class="navbar">
+    <h2>💄 Clueless Closet</h2>
+    <div class="navbar-nav">
+      <a href="index.html">Home</a>
+      <a href="closet.html">Closet</a>
+      <a href="generator.html">Generator</a>
+      <a href="saved.html">Saved Outfits</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="container glass-box">
+    <h1>Welcome to Clueless Outfit Generator</h1>
+    <p class="lead">Upload your clothes, let the color-matcher style them, and save your favorite looks.</p>
+    <div class="center-row">
+      <a class="btn big-btn" href="closet.html">Open Closet</a>
+    </div>
+  </div>
+
+</body>
+
+</html>

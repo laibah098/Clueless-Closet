@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>About - Clueless Outfit Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="leopard-page page-bg">
+
+  <nav class="navbar">
+    <h2>💄 Clueless Closet</h2>
+    <div class="navbar-nav">
+      <a href="index.html">Home</a>
+      <a href="closet.html">Closet</a>
+      <a href="generator.html">Generator</a>
+      <a href="saved.html">Saved Outfits</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="container glass-box">
+    <h2>About This Project</h2>
+    <p class="lead">This project takes inspiration from the famous outfit selector in the movie Clueless, where the main character uses a computer to browse and coordinate her clothes. The goal is to make outfit choices simpler and more enjoyable by providing style recommendations. It tackles the common issue of wasting time and feeling indecisive when trying to choose what to wear, especially with a large wardrobe.</p>
+    <p>Made by <strong>Laibah Khan</strong> & <strong>Amna Akif</strong>.</p>
+  </div>
+</body>
+</html>

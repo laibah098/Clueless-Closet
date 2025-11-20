@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Clueless Closet - Closet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="leopard-page page-bg">
+
+  <nav class="navbar">
+    <h2>💄 Clueless Closet</h2>
+    <div class="navbar-nav">
+      <a href="index.html">Home</a>
+      <a href="closet.html">Closet</a>
+      <a href="generator.html">Generator</a>
+      <a href="saved.html">Saved Outfits</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="container glass-box">
+    <h2>Your Closet</h2>
+    <p class="lead">Upload photos of your tops, bottoms, shoes, or accessories.</p>
+
+    <!-- Category selection -->
+    <label for="categorySelect">Choose Category:</label>
+    <select id="categorySelect">
+      <option value="top">Top</option>
+      <option value="bottom">Bottom</option>
+      <option value="shoes">Shoes</option>
+      <option value="accessory">Accessory</option>
+    </select>
+
+    <!-- File input -->
+    <input type="file" id="fileInput" accept="image/*" multiple>
+
+    <!-- Add button -->
+    <button id="addBtn" class="btn big-btn">Add to Closet</button>
+
+    <!-- Message area -->
+    <p id="closetMsg"></p>
+
+    <!-- Gallery -->
+    <div id="closetGallery" class="gallery"></div>
+
+    <div style="margin-top:18px">
+      <a class="btn big-btn" href="generator.html">Go to Generator</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

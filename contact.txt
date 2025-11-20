@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Clueless Closet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="leopard-page page-bg">
+
+  <nav class="navbar">
+    <h2>💄 Clueless Closet</h2>
+    <div class="navbar-nav">
+      <a href="index.html">Home</a>
+      <a href="closet.html">Closet</a>
+      <a href="generator.html">Generator</a>
+      <a href="saved.html">Saved Outfits</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="contact-container glass-box">
+    <h2>Contact</h2>
+    <p>Have a question? Send it to us.</p>
+
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <textarea placeholder="Your question..." required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+</body>
+
+</html>

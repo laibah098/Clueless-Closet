@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root{
+  --bg-soft: #fff7fc;
+  --panel: #ffffff;
+  --accent-pink: #ff7acb;
+  --accent-deep: #d04aa0;
+  --accent-blue: #9ab7ff;
+  --accent-blue-2: #4d63b5;
+  --muted: #ffd6f7;
+  --text: #2b1731;
+}
+
+/* Reset + Fix unwanted top gap above navbar */
+*{box-sizing:border-box;margin:0;padding:0}
+html, body{
+  height:100%;
+  margin:0;
+  padding:0;
+}
+
+/* Main body styling */
+body{
+  background: var(--bg-soft);
+  color:var(--text);
+  font-family:"Poppins", Arial, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.4;
+}
+
+/* Extra safeguard to stop random spacing before first element */
+.navbar{
+  margin-top:0 !important;
+}
+
+/* GLASSY TRANSPARENT NAVBAR FOR ALL PAGES */
+.navbar{
+  width:100%;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:60;
+
+  background: linear-gradient(180deg,#ffe4ebcc,#ffe4eb99);
+  backdrop-filter: blur(6px);
+  border-bottom:4px solid #ffd6f7;
+}
+.navbar h2{
+  margin:0;
+  color:#ff75a6;
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:0.4px;
+}
+.navbar-nav{display:flex; gap:12px; align-items:center}
+.navbar-nav a{
+  text-decoration:none;
+  font-weight:600;
+  margin:0 10px;
+  color:#ff75a6;
+  padding:8px 12px;
+  transition:0.18s ease;
+}
+.navbar-nav a:hover{
+  color:#d44f8f;
+  transform:translateY(-2px);
+}
+
+/* Unified page background for leopard pages */
+.page-bg {
+  background-image: url('leopard-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  padding: 0; /* removed gap above navbar */
+}
+
+/* Layout container for most pages */
+.container{
+  max-width:980px;
+  margin:40px auto 60px auto; /* spacing below navbar */
+  background:var(--panel);
+  padding:26px 28px;
+  border-radius:14px;
+  box-shadow:0 8px 28px rgba(183,82,167,0.05);
+  text-align:center;
+}
+
+/* Generator-specific box */
+.generator-box{
+  width:72%;
+  margin:40px auto 60px auto; /* spacing below navbar consistent with .container */
+  background: rgba(255, 228, 235, 0.92);
+  border-radius:14px;
+  padding:34px;
+  border:5px solid #ffd6f7;
+  box-shadow:0 14px 50px rgba(0,0,0,0.25);
+  text-align:center;
+}
+
+/* Glass pink box reused for home and other pages */
+.glass-box{
+  background: rgba(255, 228, 235, 0.92);
+  border: 5px solid #ffd6f7;
+  border-radius: 14px;
+  box-shadow: 0 14px 50px rgba(0,0,0,0.25);
+  margin:40px auto 60px auto; /* spacing below navbar consistent */
+  padding:34px;
+}
+
+/* Headings */
+h1,h2{color:var(--accent-deep); margin-bottom:12px}
+p.lead{color:#5d2b50; margin-bottom:18px}
+
+/* Buttons (general) */
+.btn{
+  display:inline-block;
+  background:var(--accent-pink);
+  color:white;
+  border:none;
+  padding:10px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover{ transform:translateY(-3px); box-shadow:0 10px 25px rgba(183,82,167,0.12)}
+.btn-ghost{
+  background:transparent;
+  color:var(--accent-deep);
+  border:2px solid var(--muted);
+  padding:8px 12px;
+  border-radius:10px;
+}
+
+/* FORM ELEMENTS */
+input[type="file"], input[type="text"], textarea, select{
+  width:92%;
+  max-width:700px;
+  margin:10px auto;
+  padding:10px 12px;
+  border-radius:10px;
+  border:2px solid var(--muted);
+  font-size:15px;
+}
+
+/* Gallery */
+.gallery{
+  display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:14px
+}
+.gallery img{
+  width:120px; height:120px; object-fit:cover; border-radius:10px; border:3px solid #ffd6f7
+}
+
+/* small screens */
+@media (max-width:720px){
+  .container{margin:18px; padding:18px}
+  .gallery img{ width:90px; height:90px }
+}
+
+/* SAVED OUTFITS */
+.saved-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+  gap:18px;
+  margin-top:18px;
+}
+.saved-card{
+  background:linear-gradient(180deg,#fff,#fff7fb);
+  padding:12px;
+  border-radius:12px;
+  border:2px solid #ffddec;
+  text-align:center;
+  box-shadow:0 8px 20px rgba(215, 74, 140, 0.06);
+}
+
+/* Adjust saved outfit images */
+.saved-card img{
+  max-width: 120px;       /* limit width */
+  max-height: 120px;      /* limit height */
+  object-fit: cover;      /* maintain aspect ratio, crop if necessary */
+  margin: 6px auto;       /* spacing and centered */
+  border-radius: 10px;
+  background:#fff;
+  display: block;         /* center inside the card */
+}
+
+/* Delete button */
+.delete-btn{
+  background:#ff4d72;
+  color:#fff;
+  border:none;
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+.delete-btn:hover{background:#d63d3d}
+
+/*scale images in closets and generator previews for consistency */
+#closetGallery img,
+#outfitPreview img {
+  max-width: 120px;
+  max-height: 120px;
+  object-fit: cover;
+  margin: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Generator buttons */
+.generator .big-btn{
+  background:#ff9bbe;
+  color:white;
+  border:3px solid #ff75a6;
+  padding:14px 26px;
+  font-size:18px;
+  border-radius:12px;
+  font-weight:700;
+  margin:10px;
+  cursor:pointer;
+  transition:0.2s;
+}
+.generator .big-btn:hover{
+  background:#ff75a6;
+}
+
+/* Outfit images */
+#outfitResult img, #displayArea img{
+  max-width:180px;
+  max-height:180px;
+  object-fit:contain;
+  margin:10px;
+  border-radius:8px;
+  background:#fff;
+  padding:6px;
+  border:2px solid #ffd6f7;
+}
+
+/* Leopard accent buttons */
+.leopard-accent{
+  background:white;
+  border: 3px solid #ffd6f7;
+  position:relative;
+  overflow:hidden;
+}
+.leopard-accent::after{
+  content:"";
+  position:absolute;
+  right:-60px; top:-40px;
+  width:180px; height:180px;
+  background-image:url('leopard-swatch.png');
+  background-size:cover;
+  opacity:0.18;
+  transform:rotate(15deg);
+}
+
+/* utils */
+.center-row{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+/* CONTACT PAGE FIXES */
+.contact-container {
+  width: 50%;
+  margin: 60px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0px 0px 20px rgba(0,0,0,0.05);
+}
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.contact-form input,
+.contact-form textarea {
+  width: 90%;
+  margin: 10px 0;
+  padding: 14px;
+  font-size: 15px;
+  border: 2px solid #ffb3e6;
+  border-radius: 10px;
+  outline: none;
+}
+.contact-form textarea {
+  height: 130px;
+  resize: none;
+}
+.contact-form button {
+  background: #ff5ac8;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: 0.3s;
+}
+.contact-form button:hover {
+  background: #ff37b6;
+}
+
+/*Closet item wrapper for delete button */
+.closet-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  border: 2px solid #ffd6f7;
+  width: 130px;
+}
+
+/*Delete button for closet images */
+.delete-item-btn {
+  background: #ff4d72;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+.delete-item-btn:hover {
+  background: #d63d3d;
+}
+

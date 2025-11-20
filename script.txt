@@ -1,0 +1,393 @@
+/* ***********************
+   CLIENT-SIDE OUTFIT GENERATOR
+   - Stores uploaded images (dataURLs) grouped by category in localStorage
+   - Extracts average/dominant color per image using canvas
+   - Scores all combinations (top x bottom x shoes) by color harmony rules
+   - Returns best match, supports "Try Again" to see next best, and "Save Outfit"
+   *********************** */
+
+/* --- Utilities for storage keys --- */
+const STORAGE_KEYS = {
+  CLOSET: "clueless_closet_v1",
+  SAVED_OUTFITS: "clueless_saved_outfits_v1",
+  GENERATED_LIST: "clueless_generated_list_v1", // holds last generated sorted combos
+  GENERATED_INDEX: "clueless_generated_index_v1"
+};
+
+/* --- Get closet from localStorage or empty structure --- */
+function loadCloset() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEYS.CLOSET) || JSON.stringify({
+    top: [], bottom: [], shoes: [], accessory: []
+  }));
+}
+
+function saveCloset(closet) {
+  localStorage.setItem(STORAGE_KEYS.CLOSET, JSON.stringify(closet));
+}
+
+/* --- DOM: Closet page elements --- */
+const fileInput = document.getElementById('fileInput');
+const addBtn = document.getElementById('addBtn');
+const categorySelect = document.getElementById('categorySelect');
+const closetGallery = document.getElementById('closetGallery');
+const closetMsg = document.getElementById('closetMsg');
+
+/* If on closet page, wire up events */
+if (addBtn) {
+  addBtn.addEventListener('click', async () => {
+    const files = fileInput.files;
+    if (!files || files.length === 0) {
+      closetMsg.innerText = "Please select at least one image.";
+      return;
+    }
+
+    const category = categorySelect.value;
+    const closet = loadCloset();
+
+    // read each file as dataURL and compute color, then store object { src, color }
+    for (let f of files) {
+      const dataUrl = await readFileAsDataURL(f);
+      const color = await getAverageColorFromImage(dataUrl);
+      closet[category].push({ src: dataUrl, color }); // store both src and color
+    }
+
+    saveCloset(closet);
+    closetMsg.innerText = `Added ${files.length} item(s) to ${category}.`;
+    displayClosetGallery();
+    // reset input
+    fileInput.value = "";
+  });
+}
+
+/* Display closet gallery */
+function displayClosetGallery() {
+  const gallery = document.getElementById('closetGallery');
+  if (!gallery) return;
+  const closet = loadCloset();
+  gallery.innerHTML = "";
+  for (let cat of ['top','bottom','shoes','accessory']) {
+    (closet[cat] || []).forEach((item, idx) => {
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.title = `${cat} #${idx+1} — color: ${rgbToHex(item.color.r,item.color.g,item.color.b)}`;
+      gallery.appendChild(img);
+    });
+  }
+}
+
+/* --- Helper: read file as dataURL --- */
+function readFileAsDataURL(file) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = () => res(reader.result);
+    reader.onerror = err => rej(err);
+    reader.readAsDataURL(file);
+  });
+}
+
+/* --- Color extraction: draw image to canvas scaled down and average pixels --- */
+function getAverageColorFromImage(dataUrl) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      // draw on small canvas to speed up
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const maxSide = 120; // scale down for performance
+      let w = img.width;
+      let h = img.height;
+      if (w > h) {
+        if (w > maxSide) { h = Math.round(h * (maxSide / w)); w = maxSide; }
+      } else {
+        if (h > maxSide) { w = Math.round(w * (maxSide / h)); h = maxSide; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      ctx.drawImage(img, 0, 0, w, h);
+
+      const imgData = ctx.getImageData(0, 0, w, h).data;
+      let r=0,g=0,b=0,count=0;
+      for (let i=0; i<imgData.length; i+=4) {
+        const alpha = imgData[i+3];
+        if (alpha === 0) continue;
+        r += imgData[i];
+        g += imgData[i+1];
+        b += imgData[i+2];
+        count++;
+      }
+      if (count === 0) { resolve({r:200,g:200,b:200}); return; }
+      r = Math.round(r/count);
+      g = Math.round(g/count);
+      b = Math.round(b/count);
+
+      const hsl = rgbToHsl(r,g,b);
+      resolve({ r, g, b, h: hsl.h, s: hsl.s, l: hsl.l });
+    };
+    img.onerror = () => {
+      // fallback color if load fails
+      resolve({ r:200, g:200, b:200, h:0, s:0, l:80 });
+    };
+    img.src = dataUrl;
+  });
+}
+
+/* --- Color helpers --- */
+function rgbToHex(r,g,b) {
+  return '#' + [r,g,b].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+function rgbToHsl(r,g,b){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h=0, s=0, l=(max+min)/2;
+  if(max!==min){
+    const d = max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h = (g-b)/d + (g<b?6:0); break;
+      case g: h = (b-r)/d + 2; break;
+      case b: h = (r-g)/d + 4; break;
+    }
+    h = Math.round(h*60);
+  }
+  return {h, s:Math.round(s*100), l:Math.round(l*100)};
+}
+function hueDistance(a,b){
+  let d = Math.abs(a-b);
+  if (d>180) d = 360-d;
+  return d; // 0 - 180
+}
+
+/* --- Scoring / harmony rules ---
+   We'll compute a score for a combination of three items.
+   Higher score = better match.
+
+   Rules:
+   - If any item is neutral (low saturation or very light/very dark), give positive bonus
+   - If hues are analogous (hue diffs <= 40) -> good
+   - If complementary (hue diff approx 180 ± 30) -> good
+   - If saturation and lightness are similar -> small bonus
+*/
+function scoreCombo(top, bottom, shoes) {
+  // expected inputs have .color {h,s,l}
+  const a = top.color;
+  const b = bottom.color;
+  const c = shoes.color;
+
+  // neutral detection
+  function isNeutral(col) {
+    return col.s <= 18 || col.l <= 12 || col.l >= 88; // low saturation or extreme light/dark
+  }
+
+  let score = 0;
+
+  // neutral bonuses
+  if (isNeutral(a)) score += 18;
+  if (isNeutral(b)) score += 18;
+  if (isNeutral(c)) score += 18;
+
+  // hue relationships
+  const hab = hueDistance(a.h, b.h);
+  const hac = hueDistance(a.h, c.h);
+  const hbc = hueDistance(b.h, c.h);
+
+  // analogous sets: all pair distances small
+  const analogous = (hab <= 40 && hac <= 40 && hbc <= 40);
+  if (analogous) score += 50;
+
+  // complementary: at least one complementary pair
+  function complementary(d) {
+    return Math.abs(d - 180) <= 30;
+  }
+  if (complementary(hab) || complementary(hac) || complementary(hbc)) score += 45;
+
+  // partially analogous: add smaller scores for pairwise near hues
+  if (hab <= 40) score += 18;
+  if (hac <= 40) score += 18;
+  if (hbc <= 40) score += 18;
+
+  // penalize clashing colors with huge saturation differences
+  const satDiffAB = Math.abs(a.s - b.s);
+  const satDiffAC = Math.abs(a.s - c.s);
+  const satDiffBC = Math.abs(b.s - c.s);
+  if (satDiffAB > 80) score -= 12;
+  if (satDiffAC > 80) score -= 12;
+  if (satDiffBC > 80) score -= 12;
+
+  // lightness similarity bonus
+  const ldab = Math.abs(a.l - b.l);
+  const ldac = Math.abs(a.l - c.l);
+  const ldbc = Math.abs(b.l - c.l);
+  if (ldab <= 18) score += 8;
+  if (ldac <= 18) score += 8;
+  if (ldbc <= 18) score += 8;
+
+  // small tie-breaker: prefer higher saturation items (more "styling")
+  score += Math.round((a.s + b.s + c.s) / 50);
+
+  return score;
+}
+
+/* --- Generate all combos and return sorted list --- */
+function generateAllCombos() {
+  const closet = loadCloset();
+  const tops = closet.top || [];
+  const bottoms = closet.bottom || [];
+  const shoes = closet.shoes || [];
+
+  const combos = [];
+  if (tops.length === 0 || bottoms.length === 0 || shoes.length === 0) return combos;
+
+  for (let t of tops) {
+    for (let b of bottoms) {
+      for (let s of shoes) {
+        const sc = scoreCombo(t,b,s);
+        combos.push({ top: t, bottom: b, shoes: s, score: sc });
+      }
+    }
+  }
+  // sort descending by score (best first)
+  combos.sort((x,y) => y.score - x.score);
+  return combos;
+}
+
+/* --- Page: generator.html logic --- */
+const generateBtn = document.getElementById('generateBtn');
+const tryAgainBtn = document.getElementById('tryAgainBtn');
+const saveOutfitBtn = document.getElementById('saveOutfitBtn');
+const outfitPreview = document.getElementById('outfitPreview');
+const outfitExplanation = document.getElementById('outfitExplanation');
+
+if (generateBtn) {
+  generateBtn.addEventListener('click', () => {
+    const combos = generateAllCombos();
+    if (combos.length === 0) {
+      alert('Please upload at least one top, one bottom and one pair of shoes in the Closet first.');
+      return;
+    }
+    // store in localStorage
+    localStorage.setItem(STORAGE_KEYS.GENERATED_LIST, JSON.stringify(combos));
+    localStorage.setItem(STORAGE_KEYS.GENERATED_INDEX, "0");
+    showComboAtIndex(0);
+  });
+}
+
+if (tryAgainBtn) {
+  tryAgainBtn.addEventListener('click', () => {
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
+    if (list.length === 0) {
+      alert('No generated outfits yet. Click Generate Outfit first.');
+      return;
+    }
+    let idx = parseInt(localStorage.getItem(STORAGE_KEYS.GENERATED_INDEX) || "0", 10);
+    idx = Math.min(idx + 1, list.length - 1);
+    localStorage.setItem(STORAGE_KEYS.GENERATED_INDEX, String(idx));
+    showComboAtIndex(idx);
+  });
+}
+
+if (saveOutfitBtn) {
+  saveOutfitBtn.addEventListener('click', () => {
+    const idx = parseInt(localStorage.getItem(STORAGE_KEYS.GENERATED_INDEX) || "0", 10);
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
+    if (!list || list.length === 0) {
+      alert('No outfit to save. Generate one first.');
+      return;
+    }
+    const chosen = list[idx];
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAVED_OUTFITS) || "[]");
+    saved.push(chosen);
+    localStorage.setItem(STORAGE_KEYS.SAVED_OUTFITS, JSON.stringify(saved));
+    alert('Outfit saved!');
+  });
+}
+
+/* show combo at index */
+function showComboAtIndex(i) {
+  outfitPreview.innerHTML = "";
+  outfitExplanation.innerHTML = "";
+  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
+  if (!list || list.length === 0 || i < 0 || i >= list.length) return;
+  const combo = list[i];
+
+  const topImg = document.createElement('img'); topImg.src = combo.top.src;
+  const bottomImg = document.createElement('img'); bottomImg.src = combo.bottom.src;
+  const shoesImg = document.createElement('img'); shoesImg.src = combo.shoes.src;
+  outfitPreview.appendChild(topImg);
+  outfitPreview.appendChild(bottomImg);
+  outfitPreview.appendChild(shoesImg);
+
+  // Explanation text based on colors
+  const explanation = buildExplanation(combo);
+  outfitExplanation.innerText = explanation;
+}
+
+/* build a short explanation string */
+function buildExplanation(combo) {
+  const t = combo.top.color;
+  const b = combo.bottom.color;
+  const s = combo.shoes.color;
+  let explanation = `Score: ${combo.score}. `;
+
+  // neutral hints
+  function neutralText(col, which) {
+    if (col.s <= 18 || col.l <= 12 || col.l >= 88) return `${which} is neutral so it pairs well with many colors. `;
+    return "";
+  }
+  explanation += neutralText(t, "Top");
+  explanation += neutralText(b, "Bottom");
+  explanation += neutralText(s, "Shoes");
+
+  // hue relationships
+  const hab = hueDistance(t.h, b.h);
+  const hac = hueDistance(t.h, s.h);
+  const hbc = hueDistance(b.h, s.h);
+
+  if (hab <= 40 && hac <= 40 && hbc <= 40) {
+    explanation += "The outfit uses analogous colors (closely related hues) for a harmonious look.";
+  } else if (Math.abs(hab - 180) <= 30 || Math.abs(hac - 180) <= 30 || Math.abs(hbc - 180) <= 30) {
+    explanation += "There is a complementary color pair that gives a bold, high-contrast but stylish effect.";
+  } else {
+    explanation += "Colors were matched for balanced contrast and similar tones.";
+  }
+  return explanation;
+}
+
+/* --- saved.html: display saved outfits --- */
+function displaySavedOutfits() {
+  const gallery = document.getElementById('savedGallery');
+  if (!gallery) return;
+  gallery.innerHTML = "";
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAVED_OUTFITS) || "[]");
+  if (saved.length === 0) {
+    gallery.innerHTML = "<p>No saved outfits yet.</p>";
+    return;
+  }
+  saved.forEach((outfit, idx) => {
+    const card = document.createElement('div');
+    card.className = 'saved-card';  
+    const topImg = document.createElement('img'); topImg.src = outfit.top.src;
+    const bottomImg = document.createElement('img'); bottomImg.src = outfit.bottom.src;
+    const shoesImg = document.createElement('img'); shoesImg.src = outfit.shoes.src;
+    const del = document.createElement('button'); del.className='btn'; del.innerText='Delete';
+    del.onclick = () => {
+      saved.splice(idx,1);
+      localStorage.setItem(STORAGE_KEYS.SAVED_OUTFITS, JSON.stringify(saved));
+      displaySavedOutfits();
+    };
+    card.appendChild(topImg);
+    card.appendChild(bottomImg);
+    card.appendChild(shoesImg);
+    card.appendChild(del);
+    gallery.appendChild(card);
+  });
+}
+
+/* --- Initialization: run appropriate display functions for each page --- */
+window.addEventListener('load', () => {
+  // closet page
+  displayClosetGallery();
+
+  // saved page
+  displaySavedOutfits();
+});

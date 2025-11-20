@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Clueless Closet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-bg leopard-page">
+
+  <nav class="navbar">
+    <h2>💄 Clueless Closet</h2>
+    <div class="navbar-nav">
+      <a href="index.html">Home</a>
+      <a href="closet.html">Closet</a>
+      <a href="generator.html">Generator</a>
+      <a href="saved.html">Saved Outfits</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="container glass-box">
+    <h1>Your Closet</h1>
+    <p class="lead">Upload and manage your clothes below.</p>
+
+   <input type="file" id="fileInput" multiple>
+<select id="categorySelect">
+  <option value="top">Top</option>
+  <option value="bottom">Bottom</option>
+  <option value="shoes">Shoes</option>
+  <option value="accessory">Accessory</option>
+</select>
+
+<!-- Button row -->
+<div class="center-row" style="margin-top: 12px;">
+  <button class="btn" id="addBtn">Add to Closet</button>
+  <button class="btn" id="clearBtn">Clear All</button>
+</div>
+
+<p id="closetMsg"></p>
+
+
+    <div id="closetGallery" class="gallery"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
