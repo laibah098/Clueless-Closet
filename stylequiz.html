@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Style Quiz</title>
+  <link rel="stylesheet" href="style.css">
+<body class="leopard-page page-bg">
+
+<nav class="navbar">
+    <h2>💄 Clueless Closet</h2>
+    <div class="navbar-nav">
+      <a href="index.html">Home</a>
+      <a href="closet.html">Closet</a>
+      <a href="generator.html">Generator</a>
+      <a href="saved.html">Saved Outfits</a>
+      <a href="stylequiz.html">Style Quiz</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+</nav>
+
+
+  <style>
+    .quiz-container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 25px;
+      border-radius: 18px;
+      text-align: center;
+    }
+
+    .quiz-btn {
+      padding: 12px 20px;
+      margin: 10px 0;
+      background: #ff69b4;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      width: 80%;
+    }
+
+    .quiz-btn:hover {
+      opacity: 0.9;
+    }
+
+    .question {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .answer {
+      background: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 8px 0;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .answer:hover {
+      border-color: hotpink;
+    }
+
+    .result-box {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body class="page-bg leopard-page">
+
+  <nav class="navbar">
+    <h2>💄 Clueless Closet</h2>
+    <div class="navbar-nav">
+      <a href="index.html">Home</a>
+      <a href="closet.html">Closet</a>
+      <a href="generator.html">Generator</a>
+      <a href="saved.html">Saved Outfits</a>
+      <a href="stylequiz.html">Style Quiz</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="quiz-container" id="welcomeScreen">
+    <h1>✨ Discover Your Style ✨</h1>
+    <p>Take this quick fashion personality quiz to find out your true aesthetic!</p>
+    <button class="quiz-btn" id="startQuizBtn">Start Quiz</button>
+  </div>
+
+  <div class="quiz-container" id="quizScreen" style="display:none;">
+    <div class="question" id="questionText"></div>
+    <div id="answersContainer"></div>
+  </div>
+
+  <div class="quiz-container" id="resultScreen" style="display:none;">
+    <h2>Your Style Result</h2>
+    <div class="result-box" id="resultText"></div>
+    <button class="quiz-btn" id="restartQuizBtn">Retake Quiz</button>
+  </div>
+</body>
+</html>
