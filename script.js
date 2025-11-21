@@ -323,3 +323,108 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (document.getElementById('savedGallery')) displaySavedOutfits();
 });
+
+/* ===========================
+     STYLE QUIZ SCRIPT
+   =========================== */
+
+if (window.location.pathname.includes("stylequiz.html")) {
+
+  const questions = [
+    {
+      text: "What’s your go-to outfit?",
+      options: [
+        { text: "Oversized sweater + jeans", style: "Casual" },
+        { text: "Blazer + trousers", style: "Chic" },
+        { text: "Pink mini skirt + crop top", style: "Girly" },
+        { text: "Leather jacket + boots", style: "Edgy" }
+      ]
+    },
+    {
+      text: "Pick a color palette:",
+      options: [
+        { text: "Neutrals (white, beige, brown)", style: "Chic" },
+        { text: "Bright colors!", style: "Girly" },
+        { text: "Black + dark tones", style: "Edgy" },
+        { text: "Soft pastels", style: "Girly" }
+      ]
+    },
+    {
+      text: "Your dream closet would look like:",
+      options: [
+        { text: "Comfortable & simple", style: "Casual" },
+        { text: "Classy and organized", style: "Chic" },
+        { text: "Sparkly and fun", style: "Girly" },
+        { text: "Bold and unique", style: "Edgy" }
+      ]
+    },
+    {
+      text: "Favorite shoes?",
+      options: [
+        { text: "Sneakers", style: "Casual" },
+        { text: "Heels", style: "Chic" },
+        { text: "Cute flats", style: "Girly" },
+        { text: "Combat boots", style: "Edgy" }
+      ]
+    }
+  ];
+
+  const descriptions = {
+    "Casual": "You love comfort, basics, and effortless everyday looks.",
+    "Chic": "Elegant, stylish, and timeless — you always look put together.",
+    "Girly": "Pink, sparkles, skirts — you love soft, feminine aesthetics!",
+    "Edgy": "Bold, dark, and expressive. You’re not afraid of standing out!"
+  };
+
+  let currentQ = 0;
+  let score = { Casual:0, Chic:0, Girly:0, Edgy:0 };
+
+  const startBtn = document.getElementById("startQuizBtn");
+  const quizStart = document.getElementById("quizStart");
+  const quizQuestions = document.getElementById("quizQuestions");
+  const quizResult = document.getElementById("quizResult");
+  const questionText = document.getElementById("questionText");
+  const optionsDiv = document.getElementById("options");
+
+  startBtn.addEventListener("click", () => {
+    quizStart.style.display = "none";
+    quizQuestions.style.display = "block";
+    loadQuestion();
+  });
+
+  function loadQuestion() {
+    let q = questions[currentQ];
+    questionText.textContent = q.text;
+    optionsDiv.innerHTML = "";
+
+    q.options.forEach(opt => {
+      let btn = document.createElement("button");
+      btn.textContent = opt.text;
+      btn.onclick = () => selectOption(opt.style);
+      optionsDiv.appendChild(btn);
+    });
+  }
+
+  function selectOption(style) {
+    score[style]++;
+    currentQ++;
+
+    if (currentQ < questions.length) loadQuestion();
+    else showResult();
+  }
+
+  function showResult() {
+    quizQuestions.style.display = "none";
+    quizResult.style.display = "block";
+
+    let finalStyle = Object.keys(score).reduce((a,b) =>
+      score[a] > score[b] ? a : b
+    );
+
+    document.getElementById("resultStyle").textContent = finalStyle;
+    document.getElementById("resultDescription").textContent =
+      descriptions[finalStyle];
+  }
+
+}
+
