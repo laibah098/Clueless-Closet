@@ -26,6 +26,37 @@ function readFileAsDataURL(file) {
   });
 }
 
+/* ---------------------------------------------------------
+      🔥 NEW: COMPRESS IMAGES BEFORE SAVING (VERY IMPORTANT)
+---------------------------------------------------------- */
+async function compressImage(dataUrl, maxSize = 200) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+
+      // Scale down while keeping aspect ratio
+      if (w > h && w > maxSize) {
+        h = Math.round(h * (maxSize / w));
+        w = maxSize;
+      } else if (h > maxSize) {
+        w = Math.round(w * (maxSize / h));
+        h = maxSize;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+
+      // JPEG with 0.7 compression = super small
+      resolve(canvas.toDataURL("image/jpeg", 0.7));
+    };
+    img.src = dataUrl;
+  });
+}
+
 /* --- Average color from image --- */
 function getAverageColorFromImage(dataUrl) {
   return new Promise(resolve => {
@@ -229,10 +260,14 @@ window.addEventListener('DOMContentLoaded', () => {
       const closet = loadCloset();
       const category = categorySelect.value;
 
-      const addedCount = fileInput.files.length; // FIXED
+      const addedCount = fileInput.files.length;
 
       for (let f of fileInput.files) {
-        const dataUrl = await readFileAsDataURL(f);
+        let dataUrl = await readFileAsDataURL(f);
+
+        // 🔥 COMPRESS BEFORE SAVING
+        dataUrl = await compressImage(dataUrl);
+
         const color = await getAverageColorFromImage(dataUrl);
         closet[category].push({ src: dataUrl, color });
       }
@@ -241,7 +276,7 @@ window.addEventListener('DOMContentLoaded', () => {
       displayClosetGallery();
       fileInput.value = "";
 
-      alert(`${addedCount} item(s) added to ${category}.`); // FIXED
+      alert(`${addedCount} item(s) added to ${category}.`);
     });
   }
 
@@ -253,7 +288,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const saveOutfitBtn = document.getElementById('saveOutfitBtn');
 
   if (generateBtn) {
-    // ❌ REMOVED THE RESET — FIXED
     generateBtn.addEventListener('click', () => {
       const combos = generateAllCombos();
       if (!combos.length) return alert("Upload at least one top, bottom, and shoes.");
@@ -265,7 +299,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (tryAgainBtn) {
     tryAgainBtn.addEventListener('click', () => {
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]" );
       if (!list.length) return alert("Generate an outfit first.");
       let idx = parseInt(localStorage.getItem(STORAGE_KEYS.GENERATED_INDEX) || "0", 10);
       idx = (idx + 1) % list.length;
@@ -287,6 +321,5 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Saved outfits page
   if (document.getElementById('savedGallery')) displaySavedOutfits();
 });
