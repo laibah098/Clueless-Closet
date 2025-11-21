@@ -105,7 +105,8 @@ function generateAllCombos() {
   const tops = closet.top || [], bottoms = closet.bottom || [], shoes = closet.shoes || [];
   const combos = [];
   if (tops.length === 0 || bottoms.length === 0 || shoes.length === 0) return combos;
-  for (let t of tops) for (let b of bottoms) for (let s of shoes) combos.push({ top: t, bottom: b, shoes: s, score: scoreCombo(t, b, s) });
+  for (let t of tops) for (let b of bottoms) for (let s of shoes)
+    combos.push({ top: t, bottom: b, shoes: s, score: scoreCombo(t, b, s) });
   combos.sort((x, y) => y.score - x.score);
   return combos;
 }
@@ -120,11 +121,21 @@ function displayClosetGallery() {
     (closet[cat] || []).forEach((item, idx) => {
       const wrapper = document.createElement('div');
       wrapper.className = 'closet-item';
-      const img = document.createElement('img'); img.src = item.src; img.title = `${cat} #${idx+1} — color: ${rgbToHex(item.color.r,item.color.g,item.color.b)}`;
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.title = `${cat} #${idx+1} — color: ${rgbToHex(item.color.r,item.color.g,item.color.b)}`;
       wrapper.appendChild(img);
-      const delBtn = document.createElement('button'); delBtn.className = 'delete-item-btn'; delBtn.innerText = 'Delete';
-      delBtn.onclick = () => { closet[cat].splice(idx, 1); saveCloset(closet); displayClosetGallery(); };
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-item-btn';
+      delBtn.innerText = 'Delete';
+      delBtn.onclick = () => {
+        closet[cat].splice(idx, 1);
+        saveCloset(closet);
+        displayClosetGallery();
+      };
       wrapper.appendChild(delBtn);
+
       gallery.appendChild(wrapper);
     });
   });
@@ -149,7 +160,9 @@ function showComboAtIndex(i) {
 
   outfitPreview.innerHTML = "";
   [combo.top, combo.bottom, combo.shoes].forEach(item => {
-    const img = document.createElement('img'); img.src = item.src || ''; outfitPreview.appendChild(img);
+    const img = document.createElement('img');
+    img.src = item.src || '';
+    outfitPreview.appendChild(img);
   });
 
   outfitExplanation.innerText = buildExplanation(combo);
@@ -159,11 +172,13 @@ function showComboAtIndex(i) {
 function buildExplanation(combo) {
   const t = combo.top.color, b_ = combo.bottom.color, s = combo.shoes.color;
   let explanation = `Score: ${combo.score}. `;
-  const neutralText = (col, which) => (col.s <= 18 || col.l <= 12 || col.l >= 88) ? `${which} is neutral, pairs well. ` : "";
+  const neutralText = (col, which) =>
+    (col.s <= 18 || col.l <= 12 || col.l >= 88) ? `${which} is neutral, pairs well. ` : "";
   explanation += neutralText(t, "Top") + neutralText(b_, "Bottom") + neutralText(s, "Shoes");
   const hab = hueDistance(t.h, b_.h), hac = hueDistance(t.h, s.h), hbc = hueDistance(b_.h, s.h);
   if (hab <= 40 && hac <= 40 && hbc <= 40) explanation += "Uses analogous colors for harmony.";
-  else if (Math.abs(hab - 180) <= 30 || Math.abs(hac - 180) <= 30 || Math.abs(hbc - 180) <= 30) explanation += "Contains complementary color pair for bold effect.";
+  else if (Math.abs(hab - 180) <= 30 || Math.abs(hac - 180) <= 30 || Math.abs(hbc - 180) <= 30)
+    explanation += "Contains complementary color pair for bold effect.";
   else explanation += "Colors matched for balanced contrast and tones.";
   return explanation;
 }
@@ -177,10 +192,21 @@ function displaySavedOutfits() {
   if (saved.length === 0) { gallery.innerHTML = "<p>No saved outfits yet.</p>"; return; }
 
   saved.forEach((outfit, idx) => {
-    const card = document.createElement('div'); card.className = 'saved-card';
-    [outfit.top, outfit.bottom, outfit.shoes].forEach(item => { const img = document.createElement('img'); img.src = item.src || ''; card.appendChild(img); });
-    const del = document.createElement('button'); del.className = 'btn'; del.innerText = 'Delete';
-    del.onclick = () => { saved.splice(idx, 1); localStorage.setItem(STORAGE_KEYS.SAVED_OUTFITS, JSON.stringify(saved)); displaySavedOutfits(); };
+    const card = document.createElement('div');
+    card.className = 'saved-card';
+    [outfit.top, outfit.bottom, outfit.shoes].forEach(item => {
+      const img = document.createElement('img');
+      img.src = item.src || '';
+      card.appendChild(img);
+    });
+    const del = document.createElement('button');
+    del.className = 'btn';
+    del.innerText = 'Delete';
+    del.onclick = () => {
+      saved.splice(idx, 1);
+      localStorage.setItem(STORAGE_KEYS.SAVED_OUTFITS, JSON.stringify(saved));
+      displaySavedOutfits();
+    };
     card.appendChild(del);
     gallery.appendChild(card);
   });
@@ -188,6 +214,7 @@ function displaySavedOutfits() {
 
 /* --- Initialize pages --- */
 window.addEventListener('DOMContentLoaded', () => {
+
   // Closet page
   const fileInput = document.getElementById('fileInput');
   const addBtn = document.getElementById('addBtn');
@@ -202,6 +229,8 @@ window.addEventListener('DOMContentLoaded', () => {
       const closet = loadCloset();
       const category = categorySelect.value;
 
+      const addedCount = fileInput.files.length; // FIXED
+
       for (let f of fileInput.files) {
         const dataUrl = await readFileAsDataURL(f);
         const color = await getAverageColorFromImage(dataUrl);
@@ -211,7 +240,8 @@ window.addEventListener('DOMContentLoaded', () => {
       saveCloset(closet);
       displayClosetGallery();
       fileInput.value = "";
-      alert(`${fileInput.files.length} item(s) added to ${category}.`);
+
+      alert(`${addedCount} item(s) added to ${category}.`); // FIXED
     });
   }
 
@@ -223,9 +253,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const saveOutfitBtn = document.getElementById('saveOutfitBtn');
 
   if (generateBtn) {
-    localStorage.removeItem(STORAGE_KEYS.GENERATED_LIST);
-    localStorage.removeItem(STORAGE_KEYS.GENERATED_INDEX);
-
+    // ❌ REMOVED THE RESET — FIXED
     generateBtn.addEventListener('click', () => {
       const combos = generateAllCombos();
       if (!combos.length) return alert("Upload at least one top, bottom, and shoes.");
