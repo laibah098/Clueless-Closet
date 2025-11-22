@@ -4,7 +4,47 @@
   <meta charset="utf-8" />
   <title>About - Clueless Outfit Generator</title>
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    .about-section {
+      background: rgba(255, 255, 255, 0.6);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(7px);
+    }
+
+    .about-img {
+      display: block;
+      width: 100%;
+      max-width: 350px;
+      margin: 15px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .faq-box {
+      background: rgba(255, 235, 245, 0.6);
+      padding: 25px;
+      border-radius: 15px;
+      margin-top: 30px;
+    }
+
+    .faq-box details {
+      margin-bottom: 12px;
+      padding: 10px;
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .faq-box summary {
+      font-weight: bold;
+      color: #d63384;
+    }
+  </style>
 </head>
+
 <body class="leopard-page page-bg">
 
 <nav class="navbar">
@@ -21,19 +61,74 @@
   </div>
 </nav>
 
+<div class="container glass-box">
+  <h2>About This Project</h2>
+  <p class="lead">
+    This project takes inspiration from the iconic virtual wardrobe seen in the movie <strong>Clueless</strong>.
+    Just like Cher uses a digital system to browse outfits and match her tops and bottoms, this project brings
+    that fantasy to real life! It helps solve the everyday struggle of choosing outfits from a full wardrobe
+    by making the process fun, fast, and stylish.
+  </p>
+  <p>Created by <strong>Laibah Khan</strong> & <strong>Amna Akif</strong>.</p>
+</div>
 
-  <div class="container glass-box">
-    <h2>About This Project</h2>
-    <p class="lead">This project takes inspiration from the famous outfit selector in the movie Clueless, where the main character uses a computer to browse and coordinate her clothes. The goal is to make outfit choices simpler and more enjoyable by providing style recommendations. It tackles the common issue of wasting time and feeling indecisive when trying to choose what to wear, especially with a large wardrobe.</p>
-    <p>Made by <strong>Laibah Khan</strong> & <strong>Amna Akif</strong>.</p>
-  </div>
+<!-- NEW SECTION -->
+<div class="container about-section">
+  <h2>How Clueless Inspired This Website</h2>
+  <img src="/mnt/data/about.jpg" alt="Clueless virtual wardrobe" class="about-img">
+
+  <p>
+    In the movie <em>Clueless</em>, Cher Horowitz uses a computer program to pick out outfits,
+    complete with a closet gallery and auto-matching system. This website recreates that experience—
+    but in a more modern way! Your images replace Cher’s designer wardrobe, and our generator uses
+    color theory to match pieces the same way Cher’s digital closet did.
+  </p>
+
+  <p>
+    The goal is to bring a touch of that nostalgic 90s fashion-tech dream into real life,
+    giving you a personal digital wardrobe, an outfit generator, a style quiz, and even fashion trend updates.
+  </p>
+</div>
+
+<!-- FAQ SECTION -->
+<div class="container faq-box">
+  <h2>FAQs</h2>
+
+  <details>
+    <summary>How do I add clothes to my digital closet?</summary>
+    <p>Go to the Closet page → upload your images → select a category → click Add Item.</p>
+  </details>
+
+  <details>
+    <summary>Why do I need to upload my own photos?</summary>
+    <p>The website generates outfits based on your actual clothes, just like Cher’s system.</p>
+  </details>
+
+  <details>
+    <summary>Why is the generator not working sometimes?</summary>
+    <p>You must upload at least one top, bottom, and shoes for it to create outfits.</p>
+  </details>
+
+  <details>
+    <summary>How accurate is the color matching?</summary>
+    <p>Very! The generator analyzes each image and calculates hue, saturation, and brightness to build combinations.</p>
+  </details>
+
+  <details>
+    <summary>Can I save outfits?</summary>
+    <p>Yes! Use the "Save Outfit" button after generating one.</p>
+  </details>
+</div>
+
+<!-- FOOTER -->
 <footer style="background-color: pink; text-align: center; padding: 20px 0;">
-    <p>💖 Want help understanding your style? Try the <a href="stylequiz.html">Style Quiz</a>!</p>
-    <p>❄️ Unsure what’s trending right now? Take a look at the <a href="winter-trends.html">Trends</a> page!</p>
-    <p>👗 Forgot an outfit you generated? Check your <a href="saved.html">Saved Outfits</a>.</p>
-    <p>👜 Need outfit inspo? Use the <a href="generator.html">Outfit Generator</a>!</p>
-    <p>💌 Have questions or want to suggest features? Visit the <a href="contact.html">Contact</a> page.</p>
-    <p>✨ Stay cute, stay warm, stay Clueless.</p>
-  </footer>
+  <p>💖 Want help understanding your style? Try the <a href="stylequiz.html">Style Quiz</a>!</p>
+  <p>❄️ Unsure what’s trending right now? Check out the <a href="winter-trends.html">Trends</a> page!</p>
+  <p>👗 Didn’t save an outfit? View them in <a href="saved.html">Saved Outfits</a>.</p>
+  <p>👜 Need outfit inspo? Use the <a href="generator.html">Outfit Generator</a>!</p>
+  <p>💌 Have questions or want to suggest features? Visit <a href="contact.html">Contact</a>.</p>
+  <p>✨ Stay cute, stay warm, stay Clueless.</p>
+</footer>
+
 </body>
 </html>
