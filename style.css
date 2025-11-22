@@ -354,36 +354,39 @@ input[type="file"], input[type="text"], textarea, select{
   overflow: hidden;
 }
 
-/* Add cute floating hearts or sparkles using pseudo-elements */
-.cute-footer::before,
-.cute-footer::after {
-  content: "💖";
-  position: absolute;
-  font-size: 2rem;
-  animation: float 6s infinite ease-in-out;
-  opacity: 0.5;
-}
-
-.cute-footer::before {
-  left: 10%;
-  top: 10%;
-}
-
-.cute-footer::after {
-  right: 15%;
-  top: 20%;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(15deg); }
-}
-
-.cute-footer p {
-  margin: 8px 0;
+.footer-content p {
+  margin: 10px 0;
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.6;
+  position: relative;
+}
+
+/* Floating hearts and sparkles using pseudo-elements */
+.footer-content p::before {
+  content: "💖✨";
+  position: absolute;
+  left: -25px;
+  top: -5px;
+  font-size: 1.2rem;
+  opacity: 0.6;
+  animation: floatHearts 5s infinite ease-in-out;
+}
+
+.footer-content p::after {
+  content: "💖✨";
+  position: absolute;
+  right: -25px;
+  bottom: -5px;
+  font-size: 1.2rem;
+  opacity: 0.6;
+  animation: floatHearts 6s infinite ease-in-out alternate;
+}
+
+@keyframes floatHearts {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(15deg); }
+  100% { transform: translateY(0px) rotate(-10deg); }
 }
 
 .cute-footer a {
@@ -411,7 +414,6 @@ input[type="file"], input[type="text"], textarea, select{
   text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
 }
 
-/* Optional: add cute divider */
 .footer-divider {
   width: 60px;
   height: 4px;
@@ -419,4 +421,3 @@ input[type="file"], input[type="text"], textarea, select{
   margin: 20px auto;
   border-radius: 2px;
 }
-
