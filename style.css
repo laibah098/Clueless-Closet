@@ -341,3 +341,9 @@ input[type="file"], input[type="text"], textarea, select{
   background: #d63d3d;
 }
 
+footer {
+    background-color: pink;
+    text-align: center;
+    padding: 20px 0;
+}
+
