@@ -340,10 +340,83 @@ input[type="file"], input[type="text"], textarea, select{
 .delete-item-btn:hover {
   background: #d63d3d;
 }
+.cute-footer {
+  background: linear-gradient(135deg, #ffb6d5, #ff8cc4, #ffa1d2);
+  padding: 50px 20px;
+  text-align: center;
+  border-top-left-radius: 60px;
+  border-top-right-radius: 60px;
+  margin-top: 60px;
+  box-shadow: 0 -6px 25px rgba(0,0,0,0.2);
+  color: #4a0038;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
 
-footer {
-    background-color: pink;
-    text-align: center;
-    padding: 20px 0;
+/* Add cute floating hearts or sparkles using pseudo-elements */
+.cute-footer::before,
+.cute-footer::after {
+  content: "💖";
+  position: absolute;
+  font-size: 2rem;
+  animation: float 6s infinite ease-in-out;
+  opacity: 0.5;
+}
+
+.cute-footer::before {
+  left: 10%;
+  top: 10%;
+}
+
+.cute-footer::after {
+  right: 15%;
+  top: 20%;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(15deg); }
+}
+
+.cute-footer p {
+  margin: 8px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.cute-footer a {
+  color: #4a0038;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 3px 8px;
+  border-radius: 12px;
+  transition: 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.cute-footer a:hover {
+  color: #ffb6d5;
+  background: #4a0038;
+  transform: scale(1.05);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.footer-tagline {
+  margin-top: 25px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Optional: add cute divider */
+.footer-divider {
+  width: 60px;
+  height: 4px;
+  background: #fff;
+  margin: 20px auto;
+  border-radius: 2px;
 }
 
