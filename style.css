@@ -341,59 +341,8 @@ input[type="file"], input[type="text"], textarea, select{
   background: #d63d3d;
 }
 .cute-footer {
-  background: linear-gradient(135deg, #ffd1e6, #ffb3d1, #ffc0e2); /* lighter pink gradient */
-  padding: 40px 10px; /* less side padding */
-  text-align: center;
-  border-top-left-radius: 60px;
-  border-top-right-radius: 60px;
-  margin-top: 60px;
-  box-shadow: 0 -6px 25px rgba(0,0,0,0.15);
-  color: #4a0038;
-  font-family: "Poppins", sans-serif;
-  position: relative;
-  overflow: hidden;
-  max-width: 900px; /* keeps footer content from stretching too wide */
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.footer-content p {
-  margin: 12px 0;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.6;
-  position: relative;
-}
-
-/* Floating hearts and sparkles - more abundant and bigger */
-.footer-content p::before,
-.footer-content p::after {
-  content: "💖✨💫";
-  position: absolute;
-  font-size: 1.5rem;
-  opacity: 0.7;
-  animation: floatHearts 4s infinite ease-in-out alternate;
-}
-
-.footer-content p::before {
-  left: -30px;
-  top: -5px;
-}
-
-.footer-content p::after {
-  right: -30px;
-  bottom: -5px;
-}
-
-@keyframes floatHearts {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(20deg); }
-  100% { transform: translateY(0px) rotate(-20deg); }
-}
-
-.cute-footer {
   background: linear-gradient(135deg, #ffd1e6, #ffb3d1, #ffc0e2); /* light pink gradient */
-  padding: 25px 20px; /* less top/bottom space */
+  padding: 25px 40px; /* slightly more side padding */
   border-top-left-radius: 60px;
   border-top-right-radius: 60px;
   box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
@@ -401,25 +350,30 @@ input[type="file"], input[type="text"], textarea, select{
   font-family: "Poppins", sans-serif;
   position: relative;
   overflow: hidden;
+  width: 100%; /* full width */
   display: flex;
-  justify-content: space-between;
-  max-width: 1000px;
-  margin: 0 auto;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column; /* stack main sections vertically */
+  box-sizing: border-box;
 }
 
-/* Two-column layout for footer content */
 .footer-content {
   display: flex;
-  width: 100%;
   justify-content: space-between;
-  gap: 20px;
+  flex-wrap: wrap; /* allows wrapping on smaller screens */
+  width: 100%;
+  max-width: 1200px; /* center content and prevent excessive stretching */
+  margin: 0 auto;
+  gap: 40px; /* space between columns */
 }
 
 .footer-column {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 1;
+  flex: 1; /* columns take equal space */
+  min-width: 250px; /* prevent shrinking too much */
 }
 
 .footer-column p {
@@ -429,16 +383,17 @@ input[type="file"], input[type="text"], textarea, select{
   position: relative;
 }
 
-/* Sparkles in the center */
+/* Center sparkles container */
 .footer-sparkles {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   font-size: 2rem;
-  opacity: 0.4;
-  animation: driftSparkles 8s infinite linear;
+  opacity: 0.35;
   pointer-events: none;
+  white-space: nowrap;
+  animation: driftSparkles 8s infinite linear;
 }
 
 @keyframes driftSparkles {
@@ -465,21 +420,10 @@ input[type="file"], input[type="text"], textarea, select{
 }
 
 .footer-tagline {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  text-align: center;
+  margin-top: 20px;
   font-size: 1.2rem;
   font-weight: 700;
   color: #fff;
+  text-align: center;
   text-shadow: 1px 1px 6px rgba(0,0,0,0.2);
-}
-
-/* Optional divider between columns (if needed) */
-.footer-divider {
-  width: 60px;
-  height: 4px;
-  background: #fff;
-  margin: 10px auto;
-  border-radius: 2px;
 }
