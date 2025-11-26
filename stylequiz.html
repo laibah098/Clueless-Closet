@@ -5,30 +5,75 @@
   <title>Style Quiz</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .quiz-container {
-      margin: 40px auto;
-      padding: 25px;
-      max-width: 600px;
-      text-align: center;
-    }
+  /* Universal button style for quiz */
+  .quiz-container .btn {
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    padding: 14px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    background: #ff7acb;
+    color: white;
+    margin: 12px auto;
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    box-shadow: 0 6px 18px rgba(183,82,167,0.15);
+  }
 
-    .btn {
-      padding: 12px 20px;
-      background: #ffb3da;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 18px;
-      margin-top: 12px;
-    }
+  .quiz-container .btn:hover {
+    background: #d04aa0;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(183,82,167,0.25);
+  }
 
-    .btn:hover {
-      background: #ff94cd;
-    }
+  .quiz-container .btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 12px rgba(183,82,167,0.2);
+  }
 
-    #quizQuestions, #quizResult { display: none; }
-    #options button { display: block; margin: 10px auto; }
-  </style>
+  /* Answer buttons inside quiz options */
+  #options button {
+    width: 80%;
+    max-width: 400px;
+    margin: 12px auto;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 14px;
+    border: none;
+    background: #ff7acb;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(183,82,167,0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    display: block;
+    text-align: center;
+  }
+
+  #options button:hover {
+    background: #d04aa0;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(183,82,167,0.25);
+  }
+
+  #options button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 4px 12px rgba(183,82,167,0.2);
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 480px) {
+    .quiz-container .btn,
+    #options button {
+      width: 100%;
+    }
+  }
+</style>
+
 </head>
 
 <body class="page-bg leopard-page">
