@@ -4,18 +4,12 @@
   <meta charset="UTF-8">
   <title>Style Quiz</title>
   <link rel="stylesheet" href="style.css">
-
   <style>
     .quiz-container {
       margin: 40px auto;
       padding: 25px;
       max-width: 600px;
       text-align: center;
-    }
-
-    .quiz-container select,
-    .quiz-container input[type="radio"] {
-      margin: 10px 0;
     }
 
     .btn {
@@ -31,6 +25,9 @@
     .btn:hover {
       background: #ff94cd;
     }
+
+    #quizQuestions, #quizResult { display: none; }
+    #options button { display: block; margin: 10px auto; }
   </style>
 </head>
 
@@ -54,34 +51,22 @@
   <h1>Find Your Style ✨</h1>
   <p>Take this quick quiz to discover your true fashion vibe!</p>
 
-  <form id="styleQuizForm">
-    <label for="favColor">Favorite color:</label>
-    <select name="favColor" id="favColor">
-      <option value="red">Red</option>
-      <option value="blue">Blue</option>
-      <option value="green">Green</option>
-      <option value="black">Black</option>
-      <option value="white">White</option>
-    </select>
+  <!-- Start screen -->
+  <div id="quizStart">
+    <button id="startQuizBtn" class="btn">Start Quiz</button>
+  </div>
 
-    <label for="stylePref">Preferred style:</label>
-    <select name="stylePref" id="stylePref">
-      <option value="casual">Casual</option>
-      <option value="formal">Formal</option>
-      <option value="edgy">Edgy</option>
-      <option value="vintage">Vintage</option>
-    </select>
+  <!-- Dynamic questions -->
+  <div id="quizQuestions">
+    <h2 id="questionText"></h2>
+    <div id="options"></div>
+  </div>
 
-    <label>Favorite accessory:</label><br>
-    <input type="radio" name="favAccessory" value="hat" id="accHat">
-    <label for="accHat">Hat</label>
-    <input type="radio" name="favAccessory" value="bag" id="accBag">
-    <label for="accBag">Bag</label>
-    <input type="radio" name="favAccessory" value="jewelry" id="accJewelry">
-    <label for="accJewelry">Jewelry</label>
-
-    <button type="submit" class="btn">Save Quiz</button>
-  </form>
+  <!-- Result -->
+  <div id="quizResult">
+    <h2>Your Style: <span id="resultStyle"></span></h2>
+    <p id="resultDescription"></p>
+  </div>
 </div>
 
 <script src="script.js"></script>
