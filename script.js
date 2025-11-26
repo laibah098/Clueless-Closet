@@ -150,25 +150,30 @@ async function handleImageUpload(file, type) {
 
 /* --- Closet gallery --- */
 async function displayClosetGallery() {
-  const gallery=document.getElementById('closetGallery');
-  if(!gallery)return;
-  const closet=await loadCloset();
-  gallery.innerHTML="";
-  const categories=['top','bottom','shoes','accessory'];
+  const gallery = document.getElementById('closetGallery');
+  if(!gallery) return;
+  const closet = await loadCloset();
+  gallery.innerHTML = "";
+  const categories = ['top','bottom','shoes','accessory'];
   for(const cat of categories){
-    const items=closet[cat]||[];
-    for(let idx=0;idx<items.length;idx++){
-      const item=items[idx];
-      const wrapper=document.createElement('div');
-      wrapper.className='closet-item';
-      const img=document.createElement('img');
-      img.src=item.id ? await loadImageForGenerator(item.id) : '';
-      img.title=`${cat} #${idx+1} — color: ${rgbToHex(item.color.r,item.color.g,item.color.b)}`;
+    const items = closet[cat]||[];
+    for(let idx=0; idx<items.length; idx++){
+      const item = items[idx];
+      const wrapper = document.createElement('div');
+      wrapper.className = 'closet-item';
+      const img = document.createElement('img');
+      try {
+        img.src = item.id ? await loadImageForGenerator(item.id) : '';
+      } catch(e){
+        img.src = '';
+      }
+      img.title = `${cat} #${idx+1} — color: ${rgbToHex(item.color.r,item.color.g,item.color.b)}`;
       wrapper.appendChild(img);
-      const delBtn=document.createElement('button');
-      delBtn.className='delete-item-btn';
-      delBtn.innerText='Delete';
-      delBtn.onclick=async ()=>{
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-item-btn';
+      delBtn.innerText = 'Delete';
+      delBtn.onclick = async () => {
         items.splice(idx,1);
         await saveCloset(closet);
         await displayClosetGallery();
@@ -209,8 +214,8 @@ async function generateAllCombos(){
   const closet = await loadCloset();
   const tops = closet.top||[], bottoms = closet.bottom||[], shoes = closet.shoes||[];
   const combos = [];
-  if(tops.length===0||bottoms.length===0||shoes.length===0)return combos;
-  for(let t of tops)for(let b of bottoms)for(let s of shoes)
+  if(tops.length===0||bottoms.length===0||shoes.length===0) return combos;
+  for(let t of tops) for(let b of bottoms) for(let s of shoes)
     combos.push({top:t,bottom:b,shoes:s,score:scoreCombo(t,b,s)});
   combos.sort((x,y)=>y.score-x.score);
   return combos;
@@ -221,9 +226,9 @@ function buildExplanation(combo){
   const t=combo.top.color,b_=combo.bottom.color,s=combo.shoes.color;
   let explanation=`Score: ${combo.score}. `;
   const neutralText=(col,which)=>(col.s<=18||col.l<=12||col.l>=88)?`${which} is neutral, pairs well. `:"";
-  explanation+=neutralText(t,"Top")+neutralText(b_,"Bottom")+neutralText(s,"Shoes");
+  explanation += neutralText(t,"Top") + neutralText(b_,"Bottom") + neutralText(s,"Shoes");
   const hab=hueDistance(t.h,b_.h),hac=hueDistance(t.h,s.h),hbc=hueDistance(b_.h,s.h);
-  if(hab<=40&&hac<=40&&hbc<=40)explanation+="Uses analogous colors for harmony.";
+  if(hab<=40&&hac<=40&&hbc<=40) explanation+="Uses analogous colors for harmony.";
   else if(Math.abs(hab-180)<=30||Math.abs(hac-180)<=30||Math.abs(hbc-180)<=30)
     explanation+="Contains complementary color pair for bold effect.";
   else explanation+="Colors matched for balanced contrast and tones.";
@@ -250,63 +255,66 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   await displayClosetGallery();
 
-/* --- Generator --- */
-const generateBtn = document.getElementById('generateBtn');
-const tryAgainBtn = document.getElementById('tryAgainBtn');
-const saveOutfitBtn = document.getElementById('saveOutfitBtn');
+  /* --- Generator --- */
+  const generateBtn = document.getElementById('generateBtn');
+  const tryAgainBtn = document.getElementById('tryAgainBtn');
+  const saveOutfitBtn = document.getElementById('saveOutfitBtn');
 
-let currentIndex = 0; // Track current outfit in memory
+  let currentIndex = 0;
 
-async function showComboAtIndex(i){
-  const outfitPreview = document.getElementById('outfitPreview');
-  const outfitExplanation = document.getElementById('outfitExplanation');
-  if(!outfitPreview || !outfitExplanation) return;
+  async function showComboAtIndex(i){
+    const outfitPreview = document.getElementById('outfitPreview');
+    const outfitExplanation = document.getElementById('outfitExplanation');
+    if(!outfitPreview || !outfitExplanation) return;
 
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
-  if(!list || i < 0 || i >= list.length) return;
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
+    if(!list || i < 0 || i >= list.length) return;
 
-  const combo = list[i];
-  outfitPreview.innerHTML = "";
-  for(let item of [combo.top, combo.bottom, combo.shoes]){
-    const img = document.createElement('img');
-    img.src = item.id ? await loadImageForGenerator(item.id) : '';
-    outfitPreview.appendChild(img);
+    const combo = list[i];
+    outfitPreview.innerHTML = "";
+
+    for(let item of [combo.top, combo.bottom, combo.shoes]){
+      const img = document.createElement('img');
+      try { img.src = item.id ? await loadImageForGenerator(item.id) : ''; } 
+      catch(e) { img.src = ''; }
+      outfitPreview.appendChild(img);
+    }
+    outfitExplanation.innerText = buildExplanation(combo);
   }
-  outfitExplanation.innerText = buildExplanation(combo);
-}
 
-// Generate button
-if(generateBtn) generateBtn.addEventListener('click', async () => {
-  const combos = await generateAllCombos();
-  if(!combos.length) return alert("Upload at least one top, bottom, and shoes.");
-  
-  localStorage.setItem(STORAGE_KEYS.GENERATED_LIST, JSON.stringify(combos));
-  currentIndex = 0; // Reset index
-  await showComboAtIndex(currentIndex);
-});
+  // Generate button
+  if(generateBtn) generateBtn.addEventListener('click', async () => {
+    const combos = await generateAllCombos();
+    if(!combos.length) return alert("Upload at least one top, bottom, and shoes.");
 
-// Try Again button
-if(tryAgainBtn) tryAgainBtn.addEventListener('click', async () => {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
-  if(!list.length) return alert("Generate an outfit first.");
+    localStorage.setItem(STORAGE_KEYS.GENERATED_LIST, JSON.stringify(combos));
+    currentIndex = 0;
+    localStorage.setItem(STORAGE_KEYS.GENERATED_INDEX, "0");
+    await showComboAtIndex(currentIndex);
+  });
 
-  currentIndex = (currentIndex + 1) % list.length; // Move to next outfit
-  await showComboAtIndex(currentIndex);
-});
+  // Try Again button
+  if(tryAgainBtn) tryAgainBtn.addEventListener('click', async () => {
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
+    if(!list.length) return alert("Generate an outfit first.");
 
-// Save Outfit button
-if(saveOutfitBtn) saveOutfitBtn.addEventListener('click', async () => {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
-  if(!list.length) return alert("Generate an outfit first.");
+    currentIndex = (currentIndex + 1) % list.length;
+    localStorage.setItem(STORAGE_KEYS.GENERATED_INDEX, String(currentIndex));
+    await showComboAtIndex(currentIndex);
+  });
 
-  const chosen = list[currentIndex]; // Use in-memory index
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAVED_OUTFITS) || "[]");
-  saved.push(chosen);
-  localStorage.setItem(STORAGE_KEYS.SAVED_OUTFITS, JSON.stringify(saved));
-  alert("Outfit saved!");
-  await displaySavedOutfits();
-});
+  // Save Outfit button
+  if(saveOutfitBtn) saveOutfitBtn.addEventListener('click', async () => {
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GENERATED_LIST) || "[]");
+    if(!list.length) return alert("Generate an outfit first.");
 
+    const chosen = list[currentIndex];
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAVED_OUTFITS) || "[]");
+    saved.push(chosen);
+    localStorage.setItem(STORAGE_KEYS.SAVED_OUTFITS, JSON.stringify(saved));
+    alert("Outfit saved!");
+    await displaySavedOutfits();
+  });
 
   /* --- Display saved outfits --- */
   async function displaySavedOutfits(){
@@ -321,7 +329,8 @@ if(saveOutfitBtn) saveOutfitBtn.addEventListener('click', async () => {
       card.className='saved-card';
       for(let item of [outfit.top,outfit.bottom,outfit.shoes]){
         const img=document.createElement('img');
-        img.src=item.id?await loadImageForGenerator(item.id):'';
+        try { img.src=item.id?await loadImageForGenerator(item.id):''; }
+        catch(e){ img.src=''; }
         card.appendChild(img);
       }
       const del=document.createElement('button');
@@ -338,100 +347,97 @@ if(saveOutfitBtn) saveOutfitBtn.addEventListener('click', async () => {
 
   if(document.getElementById('savedGallery')) await displaySavedOutfits();
 
-/* =========================== STYLE QUIZ =========================== */
-if (document.getElementById("quizStart")) { // only run on stylequiz.html
-  const questions = [
-    {
-      text: "What’s your go-to outfit?",
-      options: [
-        { text: "Oversized sweater + jeans", style: "Casual" },
-        { text: "Blazer + trousers", style: "Chic" },
-        { text: "Pink mini skirt + crop top", style: "Girly" },
-        { text: "Leather jacket + boots", style: "Edgy" }
-      ]
-    },
-    {
-      text: "Pick a color palette:",
-      options: [
-        { text: "Neutrals (white, beige, brown)", style: "Chic" },
-        { text: "Bright colors!", style: "Girly" },
-        { text: "Black + dark tones", style: "Edgy" },
-        { text: "Soft pastels", style: "Girly" }
-      ]
-    },
-    {
-      text: "Your dream closet would look like:",
-      options: [
-        { text: "Comfortable & simple", style: "Casual" },
-        { text: "Classy and organized", style: "Chic" },
-        { text: "Sparkly and fun", style: "Girly" },
-        { text: "Bold and unique", style: "Edgy" }
-      ]
-    },
-    {
-      text: "Favorite shoes?",
-      options: [
-        { text: "Sneakers", style: "Casual" },
-        { text: "Heels", style: "Chic" },
-        { text: "Cute flats", style: "Girly" },
-        { text: "Combat boots", style: "Edgy" }
-      ]
-    }
-  ];
+  /* =========================== STYLE QUIZ =========================== */
+  if (document.getElementById("quizStart")) { // only run on stylequiz.html
+    const questions = [
+      {
+        text: "What’s your go-to outfit?",
+        options: [
+          { text: "Oversized sweater + jeans", style: "Casual" },
+          { text: "Blazer + trousers", style: "Chic" },
+          { text: "Pink mini skirt + crop top", style: "Girly" },
+          { text: "Leather jacket + boots", style: "Edgy" }
+        ]
+      },
+      {
+        text: "Pick a color palette:",
+        options: [
+          { text: "Neutrals (white, beige, brown)", style: "Chic" },
+          { text: "Bright colors!", style: "Girly" },
+          { text: "Black + dark tones", style: "Edgy" },
+          { text: "Soft pastels", style: "Girly" }
+        ]
+      },
+      {
+        text: "Your dream closet would look like:",
+        options: [
+          { text: "Comfortable & simple", style: "Casual" },
+          { text: "Classy and organized", style: "Chic" },
+          { text: "Sparkly and fun", style: "Girly" },
+          { text: "Bold and unique", style: "Edgy" }
+        ]
+      },
+      {
+        text: "Favorite shoes?",
+        options: [
+          { text: "Sneakers", style: "Casual" },
+          { text: "Heels", style: "Chic" },
+          { text: "Cute flats", style: "Girly" },
+          { text: "Combat boots", style: "Edgy" }
+        ]
+      }
+    ];
 
-  const descriptions = {
-    "Casual": "You love comfort, basics, and effortless everyday looks.",
-    "Chic": "Elegant, stylish, and timeless — you always look put together.",
-    "Girly": "Pink, sparkles, skirts — you love soft, feminine aesthetics!",
-    "Edgy": "Bold, dark, and expressive. You’re not afraid of standing out!"
-  };
+    const descriptions = {
+      "Casual": "You love comfort, basics, and effortless everyday looks.",
+      "Chic": "Elegant, stylish, and timeless — you always look put together.",
+      "Girly": "Pink, sparkles, skirts — you love soft, feminine aesthetics!",
+      "Edgy": "Bold, dark, and expressive. You’re not afraid of standing out!"
+    };
 
-  let currentQ = 0;
-  let score = { Casual: 0, Chic: 0, Girly: 0, Edgy: 0 };
+    let currentQ = 0;
+    let score = { Casual: 0, Chic: 0, Girly: 0, Edgy: 0 };
 
-  const startBtn = document.getElementById("startQuizBtn");
-  const quizStart = document.getElementById("quizStart");
-  const quizQuestions = document.getElementById("quizQuestions");
-  const quizResult = document.getElementById("quizResult");
-  const questionText = document.getElementById("questionText");
-  const optionsDiv = document.getElementById("options");
+    const startBtn = document.getElementById("startQuizBtn");
+    const quizStart = document.getElementById("quizStart");
+    const quizQuestions = document.getElementById("quizQuestions");
+    const quizResult = document.getElementById("quizResult");
+    const questionText = document.getElementById("questionText");
+    const optionsDiv = document.getElementById("options");
 
-  startBtn.addEventListener("click", () => {
-    quizStart.style.display = "none";
-    quizQuestions.style.display = "block";
-    loadQuestion();
-  });
-
-  function loadQuestion() {
-    const q = questions[currentQ];
-    questionText.textContent = q.text;
-    optionsDiv.innerHTML = "";
-    q.options.forEach(opt => {
-      const btn = document.createElement("button");
-      btn.textContent = opt.text;
-      btn.onclick = () => selectOption(opt.style);
-      optionsDiv.appendChild(btn);
-    });
-  }
-
-  function selectOption(style) {
-    score[style]++;
-    currentQ++;
-    if (currentQ < questions.length) {
+    startBtn.addEventListener("click", () => {
+      quizStart.style.display = "none";
+      quizQuestions.style.display = "block";
       loadQuestion();
-    } else {
-      showResult();
+    });
+
+    function loadQuestion() {
+      const q = questions[currentQ];
+      questionText.textContent = q.text;
+      optionsDiv.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt.text;
+        btn.onclick = () => selectOption(opt.style);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function selectOption(style) {
+      score[style]++;
+      currentQ++;
+      if (currentQ < questions.length) loadQuestion();
+      else showResult();
+    }
+
+    function showResult() {
+      quizQuestions.style.display = "none";
+      quizResult.style.display = "block";
+      const finalStyle = Object.keys(score).reduce((a,b) => score[a] > score[b] ? a : b);
+      document.getElementById("resultStyle").textContent = finalStyle;
+      document.getElementById("resultDescription").textContent = descriptions[finalStyle];
+      localStorage.setItem(STORAGE_KEYS.STYLE_QUIZ, JSON.stringify({ style: finalStyle, score }));
     }
   }
 
-  function showResult() {
-    quizQuestions.style.display = "none";
-    quizResult.style.display = "block";
-    const finalStyle = Object.keys(score).reduce((a,b) => score[a] > score[b] ? a : b);
-    document.getElementById("resultStyle").textContent = finalStyle;
-    document.getElementById("resultDescription").textContent = descriptions[finalStyle];
-    // save quiz result to localStorage for consistency with the rest of the site
-    localStorage.setItem(STORAGE_KEYS.STYLE_QUIZ, JSON.stringify({ style: finalStyle, score }));
-  }
-}
-
+});
