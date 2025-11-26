@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Style Quiz</title>
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 
-  <!-- INTERNAL CSS (safe to use — no conflict) -->
   <style>
     .quiz-container {
       margin: 40px auto;
@@ -14,21 +13,9 @@
       text-align: center;
     }
 
-    #options button {
-      display: block;
-      width: 100%;
+    .quiz-container select,
+    .quiz-container input[type="radio"] {
       margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: none;
-      background: #f7c6e0;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    #options button:hover {
-      background: #ff9fd6;
     }
 
     .btn {
@@ -38,6 +25,7 @@
       border-radius: 12px;
       cursor: pointer;
       font-size: 18px;
+      margin-top: 12px;
     }
 
     .btn:hover {
@@ -62,27 +50,42 @@
   </div>
 </nav>
 
-  <div class="quiz-container glass-box">
-    <div id="quizStart">
-      <h1>Find Your Style ✨</h1>
-      <p>Take this quick quiz to discover your true fashion vibe!</p>
-      <button class="btn" id="startQuizBtn">Start Quiz</button>
-    </div>
+<div class="quiz-container glass-box">
+  <h1>Find Your Style ✨</h1>
+  <p>Take this quick quiz to discover your true fashion vibe!</p>
 
-    <div id="quizQuestions" style="display:none;">
-      <h2 id="questionText"></h2>
-      <div id="options"></div>
-    </div>
+  <form id="styleQuizForm">
+    <label for="favColor">Favorite color:</label>
+    <select name="favColor" id="favColor">
+      <option value="red">Red</option>
+      <option value="blue">Blue</option>
+      <option value="green">Green</option>
+      <option value="black">Black</option>
+      <option value="white">White</option>
+    </select>
 
-    <div id="quizResult" style="display:none;">
-      <h1>Your Style Is...</h1>
-      <h2 id="resultStyle"></h2>
-      <p id="resultDescription"></p>
-      <button class="btn" onclick="location.reload()">Retake Quiz</button>
-    </div>
-  </div>
+    <label for="stylePref">Preferred style:</label>
+    <select name="stylePref" id="stylePref">
+      <option value="casual">Casual</option>
+      <option value="formal">Formal</option>
+      <option value="edgy">Edgy</option>
+      <option value="vintage">Vintage</option>
+    </select>
 
-  <script src="script.js"></script>
+    <label>Favorite accessory:</label><br>
+    <input type="radio" name="favAccessory" value="hat" id="accHat">
+    <label for="accHat">Hat</label>
+    <input type="radio" name="favAccessory" value="bag" id="accBag">
+    <label for="accBag">Bag</label>
+    <input type="radio" name="favAccessory" value="jewelry" id="accJewelry">
+    <label for="accJewelry">Jewelry</label>
+
+    <button type="submit" class="btn">Save Quiz</button>
+  </form>
+</div>
+
+<script src="script.js"></script>
+
 <footer class="cute-footer">
   <div class="footer-content">
     <div class="footer-column">
@@ -90,21 +93,15 @@
       <p>❄️ Unsure what’s trending right now? Check out the <a href="winter-trends.html">Trends</a> page!</p>
       <p>👗 Didn’t save an outfit? View them in <a href="saved.html">Saved Outfits</a>.</p>
     </div>
-
-    <!-- Sparkles/Hearts in the center between columns -->
     <div class="footer-sparkles">💖✨💫💖✨💫</div>
-
     <div class="footer-column">
       <p>👜 Need outfit inspo? Use the <a href="generator.html">Outfit Generator</a>!</p>
       <p>💌 Have questions or want to suggest features? Visit <a href="contact.html">Contact</a>.</p>
       <p>✨ Interested in our story? Read about it in <a href="about.html">About</a>!</p>
     </div>
   </div>
-
   <p class="footer-tagline">✨ Stay cute, stay warm, stay Clueless. ✨</p>
 </footer>
-
-
 
 </body>
 </html>
