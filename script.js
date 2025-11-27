@@ -215,8 +215,18 @@ async function generateAllCombos(){
   const tops = closet.top||[], bottoms = closet.bottom||[], shoes = closet.shoes||[];
   const combos = [];
   if(tops.length===0||bottoms.length===0||shoes.length===0) return combos;
-  for(let t of tops) for(let b of bottoms) for(let s of shoes)
-    combos.push({top:t,bottom:b,shoes:s,score:scoreCombo(t,b,s)});
+ const accessories = closet.accessory || [];
+
+for (let t of tops)
+  for (let b of bottoms)
+    for (let s of shoes)
+      if (accessories.length > 0) {
+        for (let a of accessories)
+          combos.push({ top: t, bottom: b, shoes: s, accessory: a, score: scoreCombo(t, b, s) });
+      } else {
+        combos.push({ top: t, bottom: b, shoes: s, accessory: null, score: scoreCombo(t, b, s) });
+      }
+
   combos.sort((x,y)=>y.score-x.score);
   return combos;
 }
@@ -272,11 +282,20 @@ async function showComboAtIndex(i){
 
   const combo = generatedList[i];
   outfitPreview.innerHTML = "";
-  for(let item of [combo.top, combo.bottom, combo.shoes]){
-    const img = document.createElement('img');
-    img.src = item.id ? await loadImageForGenerator(item.id) : '';
-    outfitPreview.appendChild(img);
-  }
+ // Show top, bottom, shoes (always required)
+for (let item of [combo.top, combo.bottom, combo.shoes]) {
+  const img = document.createElement('img');
+  img.src = item.id ? await loadImageForGenerator(item.id) : '';
+  outfitPreview.appendChild(img);
+}
+
+// OPTIONAL ACCESSORY
+if (combo.accessory) {
+  const accImg = document.createElement('img');
+  accImg.src = combo.accessory.id ? await loadImageForGenerator(combo.accessory.id) : '';
+  outfitPreview.appendChild(accImg);
+}
+
   outfitExplanation.innerText = buildExplanation(combo);
 }
 
