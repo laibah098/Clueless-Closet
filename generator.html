@@ -6,7 +6,29 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-bg">
+<style>
+  /* -------------------------
+     Sticky Footer Fix
+     ------------------------- */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
+  /* Make main content grow to fill space */
+  .quiz-container, .container, .generator-box, .glass-box {
+    flex: 1 0 auto;
+  }
+
+  /* Footer stays at bottom naturally */
+  footer.cute-footer {
+    flex-shrink: 0;
+  }
+</style>
 <nav class="navbar">
   <h2>💄 Clueless Closet</h2>
   <div class="navbar-nav">
