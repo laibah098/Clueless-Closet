@@ -5,7 +5,9 @@
   <title>Generate Outfit</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="page-bg">
+
 <style>
   /* -------------------------
      Sticky Footer Fix
@@ -20,7 +22,7 @@
   }
 
   /* Make main content grow to fill space */
-  .quiz-container, .container, .generator-box, .glass-box {
+  .quiz-container, .container, .generator-box, .glass-box, .generator {
     flex: 1 0 auto;
   }
 
@@ -29,6 +31,7 @@
     flex-shrink: 0;
   }
 </style>
+
 <nav class="navbar">
   <h2>💄 Clueless Closet</h2>
   <div class="navbar-nav">
@@ -44,24 +47,24 @@
 </nav>
 
 
-  <div class="generator">
-    <div class="generator-box">
-      <h2>AI Color-Matching Outfit Generator</h2>
-      <p>Tip: Upload at least one top, bottom and pair of shoes in the closet first.</p>
+<div class="generator">
+  <div class="generator-box">
+    <h2>AI Color-Matching Outfit Generator</h2>
+    <p>Tip: Upload at least one top, bottom and pair of shoes in the closet first.</p>
 
-      <button class="big-btn" id="generateBtn">Generate Outfit</button>
-      <button class="big-btn" id="tryAgainBtn">Try Again</button>
-      <button class="big-btn" id="saveOutfitBtn">Save Outfit</button>
+    <button class="big-btn" id="generateBtn">Generate Outfit</button>
+    <button class="big-btn" id="tryAgainBtn">Try Again</button>
+    <button class="big-btn" id="saveOutfitBtn">Save Outfit</button>
 
-      <div id="outfitArea">
-        <div id="outfitPreview" class="gallery"></div>
-        <div id="outfitExplanation" class="explain"></div>
-      </div>
+    <div id="outfitArea">
+      <div id="outfitPreview" class="gallery"></div>
+      <div id="outfitExplanation" class="explain"></div>
     </div>
   </div>
+</div>
 
-  <script src="script.js"></script>
-</body>
+<script src="script.js"></script>
+
 <footer class="cute-footer">
   <div class="footer-content">
     <div class="footer-column">
@@ -70,7 +73,6 @@
       <p>👗 Didn’t save an outfit? View them in <a href="saved.html">Saved Outfits</a>.</p>
     </div>
 
-    <!-- Sparkles/Hearts in the center between columns -->
     <div class="footer-sparkles">💖✨💫💖✨💫</div>
 
     <div class="footer-column">
@@ -83,5 +85,5 @@
   <p class="footer-tagline">✨ Stay cute, stay warm, stay Clueless. ✨</p>
 </footer>
 
-
+</body>
 </html>
