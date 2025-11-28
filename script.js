@@ -305,26 +305,21 @@ async function showComboAtIndex(i){
 
   const combo = generatedList[i];
   outfitPreview.innerHTML = "";
- // Show top, bottom, shoes (always required)
-const itemsToShow = [combo.top, combo.bottom, combo.shoes];
 
-if (combo.accessory) {
-  itemsToShow.push(combo.accessory);
-}
+  // Show top, bottom, shoes (always required)
+  const itemsToShow = [combo.top, combo.bottom, combo.shoes];
 
-for (let item of itemsToShow) {
-  const img = document.createElement('img');
-  img.src = item.id ? await loadImageForGenerator(item.id) : '';
-  outfitPreview.appendChild(img);
-}
+  // Add accessory
+  if (combo.accessory) {
+    itemsToShow.push(combo.accessory);
+  }
 
-
-// OPTIONAL ACCESSORY
-if (combo.accessory) {
-  const accImg = document.createElement('img');
-  accImg.src = combo.accessory.id ? await loadImageForGenerator(combo.accessory.id) : '';
-  outfitPreview.appendChild(accImg);
-}
+  // Render all final items
+  for (let item of itemsToShow) {
+    const img = document.createElement('img');
+    img.src = item.id ? await loadImageForGenerator(item.id) : '';
+    outfitPreview.appendChild(img);
+  }
 
   outfitExplanation.innerText = buildExplanation(combo);
 }
