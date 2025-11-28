@@ -64,6 +64,10 @@
     transform: translateY(0) scale(0.98);
     box-shadow: 0 4px 12px rgba(183,82,167,0.2);
   }
+#options button {
+  align-self: center; /* ensures each button is centered in flex column */
+}
+
 
   /* Mobile responsive */
   @media (max-width: 480px) {
@@ -75,24 +79,44 @@
   /* -------------------------
      Sticky Footer Fix
      ------------------------- */
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+ body {
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
+  min-height: 100vh;       /* full viewport height */
+  margin: 0;
+  padding: 0;
+  background: url('your-bg.png') no-repeat center center fixed; /* optional */
+  background-size: cover;
+  font-family: 'Arial', sans-serif;
+}
 
-  /* Make main content grow to fill space */
-  .quiz-container, .container, .generator-box, .glass-box {
-    flex: 1 0 auto;
-  }
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontal center for children */
+  text-align: center;  /* center headings and paragraphs */
+  background: rgba(255, 255, 255, 0.8); /* semi-transparent card */
+  padding: 30px 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+  max-width: 500px;
+  width: 90%;
+}
 
-  /* Footer stays at bottom naturally */
-  footer.cute-footer {
-    flex-shrink: 0;
-  }
+#quizStart, #quizQuestions, #quizResult {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center buttons & text */
+  text-align: center;
+}
+
+#options button {
+  align-self: center; /* center each option button */
+}
+
+
 </style>
 
 </head>
