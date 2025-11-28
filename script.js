@@ -222,32 +222,31 @@ async function generateAllCombos(){
   // must have top/bottom/shoes
   if (tops.length === 0 || bottoms.length === 0 || shoes.length === 0) return combos;
 
-  if (accessories.length === 0) {
-    // generate WITHOUT accessories
-    for (let t of tops)
-      for (let b of bottoms)
-        for (let s of shoes)
-          combos.push({
-            top: t,
-            bottom: b,
-            shoes: s,
-            accessory: null,
-            score: scoreCombo(t, b, s)
-          });
-  } else {
-    // generate WITH accessories
-    for (let t of tops)
-      for (let b of bottoms)
-        for (let s of shoes)
-          for (let a of accessories)
-            combos.push({
-              top: t,
-              bottom: b,
-              shoes: s,
-              accessory: a,
-              score: scoreCombo(t, b, s)  // accessory does not affect score
-            });
-  }
+ for (let t of tops)
+  for (let b of bottoms)
+    for (let s of shoes) {
+
+      // Outfit WITHOUT accessory
+      combos.push({
+        top: t,
+        bottom: b,
+        shoes: s,
+        accessory: null,
+        score: scoreCombo(t, b, s)
+      });
+
+      // Outfits WITH each accessory
+      for (let a of accessories) {
+        combos.push({
+          top: t,
+          bottom: b,
+          shoes: s,
+          accessory: a,
+          score: scoreCombo(t, b, s)
+        });
+      }
+    }
+
 
   combos.sort((x, y) => y.score - x.score);
   return combos;
