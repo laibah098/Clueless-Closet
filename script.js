@@ -389,12 +389,19 @@ if(saveOutfitBtn) saveOutfitBtn.addEventListener('click', async () => {
       const outfit=saved[idx];
       const card=document.createElement('div');
       card.className='saved-card';
-      for(let item of [outfit.top,outfit.bottom,outfit.shoes]){
-        const img=document.createElement('img');
-        try { img.src=item.id?await loadImageForGenerator(item.id):''; }
-        catch(e){ img.src=''; }
-        card.appendChild(img);
-      }
+      const itemsToShow = [outfit.top, outfit.bottom, outfit.shoes];
+
+if (outfit.accessory) {
+  itemsToShow.push(outfit.accessory);
+}
+
+for (let item of itemsToShow) {
+  const img = document.createElement('img');
+  try { img.src = item.id ? await loadImageForGenerator(item.id) : ''; }
+  catch (e) { img.src = ''; }
+  card.appendChild(img);
+}
+
       const del=document.createElement('button');
       del.className='btn'; del.innerText='Delete';
       del.onclick=async()=>{
