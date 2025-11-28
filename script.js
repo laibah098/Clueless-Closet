@@ -307,12 +307,31 @@ async function showComboAtIndex(i){
   outfitPreview.innerHTML = "";
 
   // Show top, bottom, shoes (always required)
-  const itemsToShow = [combo.top, combo.bottom, combo.shoes];
+const itemsToShow = [combo.top, combo.bottom, combo.shoes];
 
-  // Add accessory
-  if (combo.accessory) {
-    itemsToShow.push(combo.accessory);
+// Prevent duplicate accessory from appearing
+if (combo.accessory) {
+  itemsToShow.push(combo.accessory);
+}
+
+// Remove duplicates by ID
+const uniqueItems = [];
+const seen = new Set();
+
+for (let item of itemsToShow) {
+  if (!seen.has(item.id)) {
+    uniqueItems.push(item);
+    seen.add(item.id);
   }
+}
+
+// Render these instead
+for (let item of uniqueItems) {
+  const img = document.createElement('img');
+  img.src = item.id ? await loadImageForGenerator(item.id) : '';
+  outfitPreview.appendChild(img);
+}
+
 
   // Render all final items
   for (let item of itemsToShow) {
