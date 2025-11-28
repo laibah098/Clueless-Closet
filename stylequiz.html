@@ -79,17 +79,13 @@
   /* -------------------------
      Sticky Footer Fix
      ------------------------- */
- body {
+.page-bg.leopard-page {
   display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
-  min-height: 100vh;       /* full viewport height */
-  margin: 0;
-  padding: 0;
-  background: url('your-bg.png') no-repeat center center fixed; /* optional */
-  background-size: cover;
-  font-family: 'Arial', sans-serif;
+  justify-content: center;
+  padding-top: 120px; /* keeps space under navbar */
+  padding-bottom: 120px; /* fixes footer gap */
 }
+
 
 .quiz-container {
   display: flex;
