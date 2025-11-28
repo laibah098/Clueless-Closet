@@ -212,24 +212,47 @@ function scoreCombo(top,bottom,shoes){
 /* --- Generate combos --- */
 async function generateAllCombos(){
   const closet = await loadCloset();
-  const tops = closet.top||[], bottoms = closet.bottom||[], shoes = closet.shoes||[];
+  const tops = closet.top || [];
+  const bottoms = closet.bottom || [];
+  const shoes = closet.shoes || [];
+  const accessories = closet.accessory || [];
+
   const combos = [];
-  if(tops.length===0||bottoms.length===0||shoes.length===0) return combos;
- const accessories = closet.accessory || [];
 
-for (let t of tops)
-  for (let b of bottoms)
-    for (let s of shoes)
-      if (accessories.length > 0) {
-        for (let a of accessories)
-          combos.push({ top: t, bottom: b, shoes: s, accessory: a, score: scoreCombo(t, b, s) });
-      } else {
-        combos.push({ top: t, bottom: b, shoes: s, accessory: null, score: scoreCombo(t, b, s) });
-      }
+  // must have top/bottom/shoes
+  if (tops.length === 0 || bottoms.length === 0 || shoes.length === 0) return combos;
 
-  combos.sort((x,y)=>y.score-x.score);
+  if (accessories.length === 0) {
+    // generate WITHOUT accessories
+    for (let t of tops)
+      for (let b of bottoms)
+        for (let s of shoes)
+          combos.push({
+            top: t,
+            bottom: b,
+            shoes: s,
+            accessory: null,
+            score: scoreCombo(t, b, s)
+          });
+  } else {
+    // generate WITH accessories
+    for (let t of tops)
+      for (let b of bottoms)
+        for (let s of shoes)
+          for (let a of accessories)
+            combos.push({
+              top: t,
+              bottom: b,
+              shoes: s,
+              accessory: a,
+              score: scoreCombo(t, b, s)  // accessory does not affect score
+            });
+  }
+
+  combos.sort((x, y) => y.score - x.score);
   return combos;
 }
+
 
 /* --- Build explanation --- */
 function buildExplanation(combo){
@@ -283,11 +306,18 @@ async function showComboAtIndex(i){
   const combo = generatedList[i];
   outfitPreview.innerHTML = "";
  // Show top, bottom, shoes (always required)
-for (let item of [combo.top, combo.bottom, combo.shoes]) {
+const itemsToShow = [combo.top, combo.bottom, combo.shoes];
+
+if (combo.accessory) {
+  itemsToShow.push(combo.accessory);
+}
+
+for (let item of itemsToShow) {
   const img = document.createElement('img');
   img.src = item.id ? await loadImageForGenerator(item.id) : '';
   outfitPreview.appendChild(img);
 }
+
 
 // OPTIONAL ACCESSORY
 if (combo.accessory) {
